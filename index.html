@@ -36,8 +36,8 @@
   <button id="go">Simpan & buka</button>
   <p style="margin-top:18px;font-size:12px">Setelah aplikasi terbuka, kembali ke Safari lalu pilih Bagikan → <b>Add to Home Screen</b>.</p>
 </div>
-<iframe id="app" allow="camera; clipboard-write" referrerpolicy="no-referrer" hidden></iframe>
-<div class="fallback" id="fb" hidden>Jika layar kosong atau diminta login, <a id="direct" href="#" target="_top">buka My Finance langsung</a> · <a href="#" id="reset">ganti URL</a></div>
+<div id="open" class="setup" hidden><img src="icon-192.png" alt="My Finance"><h1>My Finance</h1><p>Membuka aplikasi…</p><p style="font-size:12px">Jika tidak terbuka otomatis, <a id="direct" href="#">ketuk di sini</a>.</p></div>
+<div class="fallback"><a href="#" id="reset">ganti URL</a></div>
 <script>
 (function(){
   var RE=/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
@@ -50,9 +50,10 @@
   var DEFAULT_URL='https://script.google.com/macros/s/AKfycbxVf-HgCaX1moPXBQGUM1HFKK7k-V0OHpvyZCdFFjforbnZH6wkHxGBRPeAbnLkqrxo/exec';
   var url=get()||DEFAULT_URL;
   if(url){
-    var f=document.getElementById('app');f.hidden=false;f.src=url;
+    // Dibuka sebagai halaman penuh (bukan iframe) karena login Google tidak boleh ditampilkan di dalam bingkai
+    document.getElementById('open').hidden=false;
     document.getElementById('direct').href=url;
-    setTimeout(function(){document.getElementById('fb').hidden=false},4000);
+    location.replace(url);
   }else{
     document.getElementById('setup').hidden=false;
   }
