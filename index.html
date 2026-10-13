@@ -23,6 +23,8 @@
   .setup p{color:#98a2c8;font-size:14px;line-height:1.5}
   .setup input{width:100%;box-sizing:border-box;padding:14px;border-radius:14px;border:1px solid #3a4170;background:#0e1329;color:#fff;font-size:15px;margin-top:14px}
   .setup button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#22d3ee)}
+  #how p{text-align:left;background:#0e1329;border:1px solid #3a4170;border-radius:14px;padding:14px 16px;margin:18px 0 0}
+  #openbtn{margin-top:16px}
   .err{color:#fb7185;font-size:13px;margin-top:8px;min-height:18px}
 </style>
 </head>
@@ -36,7 +38,7 @@
   <button id="go">Simpan & buka</button>
   <p style="margin-top:18px;font-size:12px">Setelah aplikasi terbuka, kembali ke Safari lalu pilih Bagikan → <b>Add to Home Screen</b>.</p>
 </div>
-<div id="open" class="setup" hidden><img src="icon-192.png" alt="My Finance"><h1>My Finance</h1><p>Membuka aplikasi…</p><p style="font-size:12px">Jika tidak terbuka otomatis, <a id="direct" href="#">ketuk di sini</a>.</p></div>
+<div id="open" class="setup" hidden><img src="apple-touch-icon.png" alt="My Finance"><h1>My Finance</h1><p id="msg">Membuka aplikasi…</p><div id="how" hidden><p><b>Pasang ikon di Layar Utama:</b><br>1. Ketuk tombol <b>Bagikan</b> di Safari (kotak dengan panah ke atas)<br>2. Pilih <b>Add to Home Screen</b> / <b>Tambah ke Layar Utama</b><br>3. Ketuk <b>Tambah</b></p></div><a id="direct" href="#" style="text-decoration:none"><button type="button" id="openbtn">Buka My Finance</button></a></div>
 <div class="fallback"><a href="#" id="reset">ganti URL</a></div>
 <script>
 (function(){
@@ -49,11 +51,18 @@
   }
   var DEFAULT_URL='https://script.google.com/macros/s/AKfycbxVf-HgCaX1moPXBQGUM1HFKK7k-V0OHpvyZCdFFjforbnZH6wkHxGBRPeAbnLkqrxo/exec';
   var url=get()||DEFAULT_URL;
+  var standalone=(window.navigator.standalone===true)||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
   if(url){
-    // Dibuka sebagai halaman penuh (bukan iframe) karena login Google tidak boleh ditampilkan di dalam bingkai
     document.getElementById('open').hidden=false;
     document.getElementById('direct').href=url;
-    location.replace(url);
+    if(standalone){
+      // dibuka dari ikon di Layar Utama -> langsung masuk (halaman penuh, bukan iframe)
+      location.replace(url);
+    }else{
+      // dibuka di browser -> tetap di sini agar "Add to Home Screen" memakai ikon My Finance
+      document.getElementById('msg').textContent='Aplikasi keuangan pribadi, keluarga, dan bisnis';
+      document.getElementById('how').hidden=false;
+    }
   }else{
     document.getElementById('setup').hidden=false;
   }
