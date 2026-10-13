@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>My Finance</title>
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<link rel="icon" type="image/png" href="icon-192.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="My Finance">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#060914">
+<style>
+  html,body{margin:0;height:100%;background:#060914;font-family:system-ui,-apple-system,sans-serif;color:#eef1ff}
+  iframe{position:fixed;inset:0;width:100%;height:100%;border:0;padding-top:env(safe-area-inset-top)}
+  .fallback{position:fixed;left:0;right:0;bottom:0;padding:10px;text-align:center;font-size:12px;background:rgba(6,9,20,.9);z-index:2}
+  a{color:#8b93ff}
+  .setup{max-width:440px;margin:0 auto;padding:12vh 24px;text-align:center}
+  .setup img{width:84px;height:84px;border-radius:20px}
+  .setup h1{font-size:24px;margin:16px 0 6px}
+  .setup p{color:#98a2c8;font-size:14px;line-height:1.5}
+  .setup input{width:100%;box-sizing:border-box;padding:14px;border-radius:14px;border:1px solid #3a4170;background:#0e1329;color:#fff;font-size:15px;margin-top:14px}
+  .setup button{width:100%;margin-top:12px;padding:14px;border:0;border-radius:14px;font-size:16px;font-weight:700;color:#fff;background:linear-gradient(135deg,#6366f1,#8b5cf6 55%,#22d3ee)}
+  .err{color:#fb7185;font-size:13px;margin-top:8px;min-height:18px}
+</style>
+</head>
+<body>
+<div id="setup" class="setup" hidden>
+  <img src="icon-192.png" alt="My Finance">
+  <h1>My Finance</h1>
+  <p>Tempel URL Web App Anda (yang berakhiran <b>/exec</b>), lalu tekan Simpan.</p>
+  <input id="u" type="url" placeholder="https://script.google.com/macros/s/.../exec" autocapitalize="off" autocorrect="off">
+  <div class="err" id="err"></div>
+  <button id="go">Simpan & buka</button>
+  <p style="margin-top:18px;font-size:12px">Setelah aplikasi terbuka, kembali ke Safari lalu pilih Bagikan → <b>Add to Home Screen</b>.</p>
+</div>
+<iframe id="app" allow="camera; clipboard-write" referrerpolicy="no-referrer" hidden></iframe>
+<div class="fallback" id="fb" hidden>Jika layar kosong atau diminta login, <a id="direct" href="#" target="_top">buka My Finance langsung</a> · <a href="#" id="reset">ganti URL</a></div>
+<script>
+(function(){
+  var RE=/^https:\/\/script\.google\.com\/macros\/s\/[\w-]+\/exec$/;
+  function get(){
+    var q=new URLSearchParams(location.search).get('u');
+    if(q&&RE.test(q)){try{localStorage.setItem('mf_url',q)}catch(e){}return q}
+    try{var s=localStorage.getItem('mf_url');if(s&&RE.test(s))return s}catch(e){}
+    return '';
+  }
+  var DEFAULT_URL='https://script.google.com/macros/s/AKfycbxVf-HgCaX1moPXBQGUM1HFKK7k-V0OHpvyZCdFFjforbnZH6wkHxGBRPeAbnLkqrxo/exec';
+  var url=get()||DEFAULT_URL;
+  if(url){
+    var f=document.getElementById('app');f.hidden=false;f.src=url;
+    document.getElementById('direct').href=url;
+    setTimeout(function(){document.getElementById('fb').hidden=false},4000);
+  }else{
+    document.getElementById('setup').hidden=false;
+  }
+  document.getElementById('go').onclick=function(){
+    var v=document.getElementById('u').value.trim();
+    if(!RE.test(v)){document.getElementById('err').textContent='URL harus berbentuk https://script.google.com/macros/s/…/exec';return}
+    // URL disimpan juga di alamat halaman, supaya ikut tersimpan saat "Add to Home Screen"
+    location.href=location.pathname+'?u='+encodeURIComponent(v);
+  };
+  document.getElementById('reset').onclick=function(e){e.preventDefault();try{localStorage.removeItem('mf_url')}catch(x){}location.href=location.pathname};
+  if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+})();
+</script>
+</body>
+</html>
