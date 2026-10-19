@@ -49,7 +49,7 @@
     try{var s=localStorage.getItem('mf_url');if(s&&RE.test(s))return s}catch(e){}
     return '';
   }
-  var DEFAULT_URL='https://script.google.com/macros/s/AKfycbxVf-HgCaX1moPXBQGUM1HFKK7k-V0OHpvyZCdFFjforbnZH6wkHxGBRPeAbnLkqrxo/exec';
+  var DEFAULT_URL='https://script.google.com/macros/s/AKfycbwQDrAxzyN1ae20MEjHnOnTjMG8Pur5HcNaxOCnX9s7qAm9DoynFIaGs8gXOHA9z7me/exec';
   var url=get()||DEFAULT_URL;
   var standalone=(window.navigator.standalone===true)||(window.matchMedia&&matchMedia('(display-mode: standalone)').matches);
   if(url){
