@@ -38,7 +38,7 @@
   <button id="go">Simpan & buka</button>
   <p style="margin-top:18px;font-size:12px">Setelah aplikasi terbuka, kembali ke Safari lalu pilih Bagikan → <b>Add to Home Screen</b>.</p>
 </div>
-<div id="open" class="setup" hidden><img src="apple-touch-icon.png" alt="My Finance"><h1>My Finance</h1><p id="msg">Membuka aplikasi…</p><div id="how" hidden><p><b>Pasang ikon di Layar Utama:</b><br>1. Ketuk tombol <b>Bagikan</b> di Safari (kotak dengan panah ke atas)<br>2. Pilih <b>Add to Home Screen</b> / <b>Tambah ke Layar Utama</b><br>3. Ketuk <b>Tambah</b></p></div><a id="direct" href="#" style="text-decoration:none"><button type="button" id="openbtn">Buka My Finance</button></a></div>
+<div id="open" class="setup" hidden><img src="apple-touch-icon.png" alt="My Finance"><h1>My Finance</h1><p id="msg">Membuka aplikasi…</p><div id="how" hidden><p><b>Pasang ikon di Layar Utama:</b><br>1. Ketuk tombol <b>Bagikan</b> di Safari (kotak dengan panah ke atas)<br>2. Pilih <b>Add to Home Screen</b> / <b>Tambah ke Layar Utama</b><br>3. Ketuk <b>Tambah</b></p></div><a id="direct" href="#" style="text-decoration:none"><button type="button" id="openbtn">Buka My Finance</button></a><p style="font-size:12px;margin-top:20px;text-align:center">Muncul <b>"Maaf, saat ini tidak dapat membuka file"</b>?<br>Itu artinya browser memakai akun Google yang salah. Coba buka dengan akun lain:</p><div id="accts" style="display:flex;gap:8px;justify-content:center;margin-top:6px"></div><p style="font-size:12px;text-align:center;margin-top:10px">Atau buka di <b>jendela samaran (incognito)</b> dan masuk hanya dengan satu akun.</p></div>
 <div class="fallback"><a href="#" id="reset">ganti URL</a></div>
 <script>
 (function(){
@@ -55,6 +55,8 @@
   if(url){
     document.getElementById('open').hidden=false;
     document.getElementById('direct').href=url;
+    var mm=url.match(/\/s\/([\w-]+)\/exec$/);
+    if(mm){var box=document.getElementById('accts');[0,1,2].forEach(function(n){var el=document.createElement('a');el.href='https://script.google.com/macros/u/'+n+'/s/'+mm[1]+'/exec';el.textContent='Akun ke-'+(n+1);el.style.cssText='padding:9px 14px;border:1px solid #3a4170;border-radius:12px;text-decoration:none;font-size:13px';box.appendChild(el)})}
     if(standalone){
       // dibuka dari ikon di Layar Utama -> langsung masuk (halaman penuh, bukan iframe)
       location.replace(url);
